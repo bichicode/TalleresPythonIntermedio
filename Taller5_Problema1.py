@@ -21,29 +21,52 @@ from openpyxl.utils import column_index_from_string
 
 # función que permita leer el archivo creado
 def leer_archivo():
-    dif = pd.read_excel('cotizaciones.xlsx', header=0)
-    print(dif)
+    try:
+
+        dif = pd.read_excel('cotizaciones.xlsx', header=0)
+        print("\n Leyendo el archivo creado\n")
+        print(dif)
+
+    except FileNotFoundError:
+        print("Archivo no encontrado")
+
+    except pd.errors.EmptyDataError:
+        print("No data")
+
+    except Exception as e:
+        print("A ocurrido un error\nFavor volver a intentar ")
+
     return
+
+# --------------------------------------------------------------------------------------------------------------
 
 
 # Función que permita leer una columna del archivo creado.
 def leer_columna():
 
-    filesheet = 'cotizaciones.xlsx'
+    try:
 
-    wb = load_workbook(filesheet)
+        filesheet = 'cotizaciones.xlsx'
 
-    column = input("Ingrese (B Nombre), (C Cantidad), (D Monto) ")
+        wb = load_workbook(filesheet)
 
-    sheet = wb.active
+        column = input("\nIngrese La letra correspondienta a la columna que desea leer"
+                       "\n(B Nombre), (C Cantidad), (D Monto) ")
 
-    ncol = column_index_from_string(column)
+        sheet = wb.active
 
-    for cell, in sheet.iter_rows(min_col=ncol, max_col=ncol, values_only=True):
+        ncol = column_index_from_string(column)
 
-        print(cell)
+        for cell, in sheet.iter_rows(min_col=ncol, max_col=ncol, values_only=True):
+
+            print(cell)
+
+    except Exception as e:
+        print("A ocurrido un error\nFavor volver a intentar ")
 
     return
+
+# --------------------------------------------------------------------------------------------------------------
 
 
 data = {}
@@ -53,36 +76,41 @@ monto = []
 
 print("Programa de Cotizaciones")
 
-while True:
+try:
 
-    nom = input("Nombre del Cliente: ")
-    nombre.append(nom)
+    while True:
 
-    cant = int(input("Cantidad: "))
-    cantidad.append(cant)
+        nom = input("Nombre del Cliente: ")
+        nombre.append(nom)
 
-    mon = input("Monto: ")
-    monto.append(mon)
+        cant = int(input("Cantidad: "))
+        cantidad.append(cant)
 
-    op = input("Presione X para salir ")
+        mon = input("Monto: ")
+        monto.append(mon)
 
-    if op == 'x' or op == 'X':
-        break
+        op = input("Presione X para salir ")
 
-zipped = list(zip(nombre, cantidad, monto))
+        if op == 'x' or op == 'X':
+            break
 
-df = pd.DataFrame(zipped, columns=['nombre', 'cantidad', 'monto'])
+    zipped = list(zip(nombre, cantidad, monto))
 
-# print(df)
+    df = pd.DataFrame(zipped, columns=['nombre', 'cantidad', 'monto'])
 
-# Crear un archivo llamado cotizaciones.xlsx que almacene las cotizaciones de la compañía
-df.to_excel('cotizaciones.xlsx')
+    # print(df)
 
-leer_archivo()
+    # Crear un archivo llamado cotizaciones.xlsx que almacene las cotizaciones de la compañía
+    df.to_excel('cotizaciones.xlsx')
 
-leer_columna()
+    leer_archivo()
 
+    leer_columna()
 
+except ValueError:
 
+    print("Valor Invalido")
 
+except Exception as e:
 
+    print("A ocurrido un error\nFavor volver a intentar ")
